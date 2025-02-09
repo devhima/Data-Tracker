@@ -1,0 +1,20 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Data-Tracker/app/src/main/java/com/devhima/datatracker/MainActivity.java",
+      "selection": {
+        "end": {
+          "column": 81,
+          "index": 9146,
+          "line": 257
+        },
+        "start": {
+          "column": 81,
+          "index": 9146,
+          "line": 257
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Data-Tracker/app/src/main/java/com/devhima/datatracker/MainActivity.java"
+}

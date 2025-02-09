@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper db;
 	private Spinner spinnerViewUsers;
     private TextView textViewUsage;
+    private TextView txtViewUsername;
     private List<User> users;
 	
     private void mkToast(String txt){
@@ -122,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
             Button buttonRefresh = findViewById(R.id.buttonRefresh);
             if(getSetting()==false){
                 buttonRefresh.setText("Start");
-                mkToast(String.valueOf(getSetting()));
+                //mkToast(String.valueOf(getSetting()));
             } else if (getSetting()==true){
                 buttonRefresh.setText("Stop");
-                mkToast(String.valueOf(getSetting()));
+                //mkToast(String.valueOf(getSetting()));
             } else{
                 saveSetting(false);
-                mkToast(String.valueOf(getSetting()));
+               // mkToast(String.valueOf(getSetting()));
             }
             
             if(getSetItem() == 99999999){
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
         textViewUsage = findViewById(R.id.textViewUsage);
 		spinnerViewUsers = findViewById(R.id.spinnerViewUsers);
+            txtViewUsername = findViewById(R.id.labelUsrName);
         
         //spinner 
 		spinnerViewUsers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
@@ -150,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
                         User xusr = users.get(adapterView.getSelectedItemPosition());
                         String dataUsage = DataUsage.formatSize(xusr.getDataUsage());
 					    textViewUsage.setText(String.format("Current Data Usage: %s", dataUsage));
+                        txtViewUsername.setText(xusr.getUsername());
+                        
 				}
 
 				@Override
@@ -177,13 +181,14 @@ public class MainActivity extends AppCompatActivity {
 						db.updateUserUsage(user.getUsername(), user.getDataUsage());
 					}*/
                         User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
-                        mkToast(String.valueOf(getSetting()));
+                        //mkToast(String.valueOf(getSetting()));
                         if(getSetting()==false){
                             buttonRefresh.setText("Stop");
                             saveSetting(true);
                             long du = DataUsage.getUsageStats();
                             xusr.setDataUsage(xusr.getDataUsage(),du,0);
                             db.updateUserUsage(xusr.getUsername(),xusr.getDataUsage(),du,0);
+                            mkToast("Start tracking..");
                         } else if(getSetting()==true){
                             buttonRefresh.setText("Start");
                             saveSetting(false);
@@ -192,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
                             totalUsage = xusr.getDataUsage() + (after - xusr.getBefore());
                             xusr.setDataUsage(totalUsage,xusr.getBefore(),after);
                             db.updateUserUsage(xusr.getUsername(),totalUsage,xusr.getBefore(),after);
+                            mkToast("Stop tracking..");
                         }
                     saveSetItem(spinnerViewUsers.getSelectedItemPosition());
 					refreshSpinner(getSetItem());
@@ -214,12 +220,81 @@ public class MainActivity extends AppCompatActivity {
 
 				@Override
 				public void onClick(View v) {
-					db.deleteNote(String.valueOf(spinnerViewUsers.getSelectedItem().toString()));
+                        if(spinnerViewUsers.getCount() != 0){
+					    db.deleteNote(String.valueOf(spinnerViewUsers.getSelectedItem().toString()));
                         refreshSpinner(0);
                         saveSetItem(0);
+                    }
 				}
 
 			});
+            
+            Button btnRstAll = findViewById(R.id.btnRstAll);
+            btnRstAll.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        
+                        if(spinnerViewUsers.getCount() != 0){
+					    for (User user : users) {
+						db.updateUserUsage(user.getUsername(),0,0,0);
+					    }
+                            saveSetItem(0);
+                            refreshSpinner(0);
+                    }
+				}
+
+			});
+            
+            Button btnRst = findViewById(R.id.btnRstItm);
+            btnRst.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        
+                        if(spinnerViewUsers.getCount() != 0){
+					    User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
+						db.updateUserUsage(xusr.getUsername(),0,0,0);
+                        refreshSpinner(spinnerViewUsers.getSelectedItemPosition());
+                    }
+				}
+
+			});
+            
+            Button btnBackup = findViewById(R.id.btnBackup);
+            btnBackup.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        //db.backup("", this);
+                       
+				}
+
+			});
+            
+            Button btnRestore = findViewById(R.id.btnRestore);
+            btnRestore.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        
+                      //db.importDB("",this);
+				}
+
+			});
+            
+            Button btnAbt = findViewById(R.id.btnAbt);
+            btnAbt.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        
+                       
+				}
+
+			});
+            
+            
             
        } catch (Exception ex){
            mkToast(ex.getMessage().toString());

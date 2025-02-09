@@ -8,26 +8,54 @@
     <LinearLayout
          android:layout_height="match_parent"
          android:layout_width="match_parent"
-         android:gravity="center"
+         android:gravity="top|center"
          android:orientation="vertical"
          android:layout_gravity="center">
+
+        <TextView
+             android:layout_height="wrap_content"
+             android:layout_width="wrap_content"
+             android:padding="20dp"
+             android:textSize="40sp"
+             android:text="Data Tracker" />
+
+        <TextView
+             android:layout_height="wrap_content"
+             android:layout_width="wrap_content"
+             android:padding="10dp"
+             android:textSize="30sp"
+             android:id="@+id/labelUsrName"
+             android:text="username" />
 
         <LinearLayout
              android:layout_height="wrap_content"
              android:layout_width="match_parent"
+             android:padding="2dp"
              android:orientation="horizontal">
 
             <Button
                  android:layout_height="wrap_content"
-                 android:layout_width="wrap_content"
-                 android:text="Add User"
+                 android:layout_width="70dp"
+                 android:text="Add +"
                  android:id="@+id/btnAddUsr" />
 
             <Button
                  android:layout_height="wrap_content"
                  android:layout_width="wrap_content"
-                 android:text="Delete User"
+                 android:text="Delete ×"
                  android:id="@+id/btnDelUsr" />
+
+            <Button
+                 android:layout_height="wrap_content"
+                 android:layout_width="70dp"
+                 android:text="Reset"
+                 android:id="@+id/btnRstItm" />
+
+            <Button
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:id="@+id/btnRstAll"
+                 android:text="Reset all" />
 
         </LinearLayout>
 
@@ -48,16 +76,54 @@
         <TextView
              android:layout_height="wrap_content"
              android:layout_width="wrap_content"
+             android:padding="10dp"
              android:textSize="24sp"
              android:id="@+id/textViewUsage"
-             android:text="current_usage" />
+             android:text="usage" />
 
         <Button
              android:layout_height="wrap_content"
              android:layout_width="wrap_content"
              android:layout_marginBottom="16dp"
+             android:padding="10dp"
              android:id="@+id/buttonRefresh"
              android:text="Start" />
+
+        <LinearLayout
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+             android:gravity="center"
+             android:padding="2dp"
+             android:orientation="horizontal">
+
+            <Button
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:text="Backup"
+                 android:id="@+id/btnBackup" />
+
+            <Button
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:text="Restore"
+                 android:id="@+id/btnRestore" />
+
+        </LinearLayout>
+
+        <LinearLayout
+             android:layout_height="fill_parent"
+             android:layout_width="match_parent"
+             android:gravity="bottom"
+             android:orientation="horizontal">
+
+            <Button
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:padding="10dp"
+                 android:text="About App"
+                 android:id="@+id/btnAbt" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
