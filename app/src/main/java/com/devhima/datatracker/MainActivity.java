@@ -16,7 +16,7 @@ import java.text.*;
 import java.util.*;
 import androidx.core.net.TrafficStatsCompat;
 import android.database.Cursor;
-
+import android.net.*;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -28,7 +28,13 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper db;
 	private Spinner spinnerViewUsers;
     private TextView textViewUsage;
+    private TextView txtViewUsername;
     private List<User> users;
+    private Context xContext;
+    private String downDir;
+    private EditText edtPsize;
+    private EditText edtPprice;
+    
 	
     private void mkToast(String txt){
 		Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();
@@ -54,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
 				}
 			}).show();
 	}
+    
+    
+    private void showMessageDialog(String title, String msgText){
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(msgText);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    }
+    });
+alertDialog.show();
+    }
     
     private void saveSetting(boolean setting){
         boolean boolToSave = setting;
@@ -119,16 +139,16 @@ public class MainActivity extends AppCompatActivity {
         // set content view to binding's root
        // setContentView(binding.getRoot());
             setContentView(R.layout.activity_main);
-            Button buttonRefresh = findViewById(R.id.buttonRefresh);
+            Button buttonRefresh = findViewById(R.id.btnRefresh);
             if(getSetting()==false){
                 buttonRefresh.setText("Start");
-                mkToast(String.valueOf(getSetting()));
+                //mkToast(String.valueOf(getSetting()));
             } else if (getSetting()==true){
                 buttonRefresh.setText("Stop");
-                mkToast(String.valueOf(getSetting()));
+                //mkToast(String.valueOf(getSetting()));
             } else{
                 saveSetting(false);
-                mkToast(String.valueOf(getSetting()));
+               // mkToast(String.valueOf(getSetting()));
             }
             
             if(getSetItem() == 99999999){
@@ -136,11 +156,15 @@ public class MainActivity extends AppCompatActivity {
             }
         
         //start
-        
+        xContext = this;
+            downDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+            //mkToast(downDir);
         db = new DatabaseHelper(this);
         textViewUsage = findViewById(R.id.textViewUsage);
 		spinnerViewUsers = findViewById(R.id.spinnerViewUsers);
-        
+            txtViewUsername = findViewById(R.id.labelUsrName);
+        edtPsize = findViewById(R.id.editPkgSize);
+            edtPprice = findViewById(R.id.editPkgPrice);
         //spinner 
 		spinnerViewUsers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 				@Override
@@ -150,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
                         User xusr = users.get(adapterView.getSelectedItemPosition());
                         String dataUsage = DataUsage.formatSize(xusr.getDataUsage());
 					    textViewUsage.setText(String.format("Current Data Usage: %s", dataUsage));
+                        txtViewUsername.setText(xusr.getUsername());
+                        
 				}
 
 				@Override
@@ -177,13 +203,14 @@ public class MainActivity extends AppCompatActivity {
 						db.updateUserUsage(user.getUsername(), user.getDataUsage());
 					}*/
                         User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
-                        mkToast(String.valueOf(getSetting()));
+                        //mkToast(String.valueOf(getSetting()));
                         if(getSetting()==false){
                             buttonRefresh.setText("Stop");
                             saveSetting(true);
                             long du = DataUsage.getUsageStats();
                             xusr.setDataUsage(xusr.getDataUsage(),du,0);
                             db.updateUserUsage(xusr.getUsername(),xusr.getDataUsage(),du,0);
+                            mkToast("Start tracking..");
                         } else if(getSetting()==true){
                             buttonRefresh.setText("Start");
                             saveSetting(false);
@@ -192,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                             totalUsage = xusr.getDataUsage() + (after - xusr.getBefore());
                             xusr.setDataUsage(totalUsage,xusr.getBefore(),after);
                             db.updateUserUsage(xusr.getUsername(),totalUsage,xusr.getBefore(),after);
+                            mkToast("Stop tracking..");
                         }
                     saveSetItem(spinnerViewUsers.getSelectedItemPosition());
 					refreshSpinner(getSetItem());
@@ -214,12 +242,123 @@ public class MainActivity extends AppCompatActivity {
 
 				@Override
 				public void onClick(View v) {
-					db.deleteNote(String.valueOf(spinnerViewUsers.getSelectedItem().toString()));
+                        if(spinnerViewUsers.getCount() != 0){
+					    db.deleteNote(String.valueOf(spinnerViewUsers.getSelectedItem().toString()));
                         refreshSpinner(0);
                         saveSetItem(0);
+                    }
 				}
 
 			});
+            
+            Button btnRstAll = findViewById(R.id.btnRstAll);
+            btnRstAll.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        
+                        if(spinnerViewUsers.getCount() != 0){
+					    for (User user : users) {
+						db.updateUserUsage(user.getUsername(),0,0,0);
+					    }
+                            saveSetItem(0);
+                            refreshSpinner(0);
+                    }
+				}
+
+			});
+            
+            Button btnRst = findViewById(R.id.btnRstItm);
+            btnRst.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        
+                        if(spinnerViewUsers.getCount() != 0){
+					    User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
+						db.updateUserUsage(xusr.getUsername(),0,0,0);
+                        refreshSpinner(spinnerViewUsers.getSelectedItemPosition());
+                    }
+				}
+
+			});
+            
+            Button btnBackup = findViewById(R.id.btnBackup);
+            btnBackup.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        db.backup(downDir + "/datausage.db", xContext);
+                       
+				}
+
+			});
+            
+            Button btnRestore = findViewById(R.id.btnRestore);
+            btnRestore.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        
+                      db.importDB(downDir + "/datausage.db",xContext);
+                        refreshSpinner(0);
+				}
+
+			});
+            
+            Button btnAbt = findViewById(R.id.btnAbt);
+            btnAbt.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                       Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://dev-hima.blogspot.com/"));
+		   		    startActivity(browse);
+				}
+
+			});
+            
+            Button btnDailyRpt = findViewById(R.id.btnDailyReport);
+            btnDailyRpt.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date = new Date();
+                        String report = "Report(";
+                        report += dateFormat.format(date).toString() + ")";
+                        int i = 0;
+                        for (User user : users) {
+                            i += 1;
+                            report += "\n (" + String.valueOf(i) + ") " + user.getUsername() + ":  " + DataUsage.formatSize(user.getDataUsage());
+                        }
+                        showMessageDialog("Daily Report", report);
+				}
+
+			});
+            
+            Button btnMonyhRpt = findViewById(R.id.btnMonthReport);
+            btnMonyhRpt.setOnClickListener( new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+                        int price = Integer.parseInt(edtPprice.getText().toString());
+                        int size = Integer.parseInt(edtPsize.getText().toString());
+                        int unitSize = price / size;
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date = new Date();
+                        String report = "Report(";
+                        report += dateFormat.format(date).toString() + ")";
+                        int i = 0;
+                        for (User user : users) {
+                            i += 1;
+                            report += "\n (" + String.valueOf(i) + ") " + user.getUsername() + ":  " + DataUsage.byteToGB(user.getDataUsage());
+                        }
+                        showMessageDialog("Monthly Report", report);
+				}
+
+			});
+            
+            
             
        } catch (Exception ex){
            mkToast(ex.getMessage().toString());

@@ -17,4 +17,9 @@ public class DataUsage {
 		return String.format("%.3f %sB", (double)v / (1L << (z*10)), " KMGTPE".charAt(z));
 	}
     
+    public static double byteToGB(long byt){
+        double i = byt * Math.pow(10,-9);
+        return i;
+    }
+    
 }

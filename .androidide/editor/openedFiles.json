@@ -1,0 +1,50 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Data-Tracker/app/src/main/java/com/devhima/datatracker/MainActivity.java",
+      "selection": {
+        "end": {
+          "column": 121,
+          "index": 12853,
+          "line": 353
+        },
+        "start": {
+          "column": 121,
+          "index": 12853,
+          "line": 353
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Data-Tracker/app/src/main/res/layout/activity_main.xml",
+      "selection": {
+        "end": {
+          "column": 52,
+          "index": 8204,
+          "line": 218
+        },
+        "start": {
+          "column": 52,
+          "index": 8204,
+          "line": 218
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Data-Tracker/app/src/main/java/com/devhima/datatracker/DataUsage.java",
+      "selection": {
+        "end": {
+          "column": 35,
+          "index": 135,
+          "line": 5
+        },
+        "start": {
+          "column": 35,
+          "index": 135,
+          "line": 5
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Data-Tracker/app/src/main/java/com/devhima/datatracker/DataUsage.java"
+}
