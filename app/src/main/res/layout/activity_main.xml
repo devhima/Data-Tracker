@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:layout_height="match_parent"
+     android:layout_width="match_parent">
+
+    <ScrollView
+         android:layout_height="match_parent"
+         android:layout_width="match_parent"
+         android:gravity="top|center">
+
+        <LinearLayout
+             android:layout_height="fill_parent"
+             android:layout_width="fill_parent"
+             android:gravity="top|center"
+             android:padding="4dp"
+             android:orientation="vertical"
+             android:layout_gravity="fill">
+
+            <TextView
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:padding="20dp"
+                 android:textSize="40sp"
+                 android:text="Data Tracker" />
+
+            <TextView
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:padding="10dp"
+                 android:textSize="30sp"
+                 android:id="@+id/labelUsrName"
+                 android:text="username" />
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:gravity="center"
+                 android:orientation="horizontal">
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="80dp"
+                     android:text="ADD"
+                     android:id="@+id/btnAddUsr" />
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="80dp"
+                     android:text="DEL"
+                     android:id="@+id/btnDelUsr" />
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="wrap_content"
+                     android:text="Reset"
+                     android:id="@+id/btnRstItm" />
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="wrap_content"
+                     android:id="@+id/btnRstAll"
+                     android:text="Reset*" />
+
+            </LinearLayout>
+
+            <TextView
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:textSize="24sp"
+                 android:id="@+id/labelUsers"
+                 android:text="Users:" />
+
+            <Spinner
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:id="@+id/spinnerViewUsers">
+
+            </Spinner>
+
+            <TextView
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:padding="10dp"
+                 android:textSize="24sp"
+                 android:id="@+id/textViewUsage"
+                 android:text="usage" />
+
+            <Button
+                 android:layout_height="60dp"
+                 android:layout_width="100dp"
+                 android:layout_marginBottom="16dp"
+                 android:padding="10dp"
+                 android:id="@+id/btnRefresh"
+                 android:text="Start" />
+
+            <Button
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
+                 android:layout_marginBottom="16dp"
+                 android:padding="10dp"
+                 android:id="@+id/btnDailyReport"
+                 android:text="Daily Report" />
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:orientation="vertical">
+
+                <TextView
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:gravity="center"
+                     android:textSize="18sp"
+                     android:id="@+id/lblMonthRptTxt"
+                     android:text="-- Monthly Report --" />
+
+                <LinearLayout
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:orientation="horizontal">
+
+                    <TextView
+                         android:layout_height="wrap_content"
+                         android:layout_width="wrap_content"
+                         android:textSize="16sp"
+                         android:text="Package size(GB):  " />
+
+                    <EditText
+                         android:layout_height="wrap_content"
+                         android:layout_width="fill_parent"
+                         android:hint="Package size (GB)"
+                         android:id="@+id/editPkgSize"
+                         android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:orientation="horizontal">
+
+                    <TextView
+                         android:layout_height="wrap_content"
+                         android:layout_width="wrap_content"
+                         android:textSize="16sp"
+                         android:text="Package Price:  " />
+
+                    <EditText
+                         android:layout_height="wrap_content"
+                         android:layout_width="fill_parent"
+                         android:hint="Package price"
+                         android:id="@+id/editPkgPrice"
+                         android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:layout_marginBottom="16dp"
+                     android:gravity="center"
+                     android:padding="10dp"
+                     android:id="@+id/btnMonthReport"
+                     android:text="Create Report" />
+
+            </LinearLayout>
+
+            <TextView
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:gravity="center"
+                 android:textSize="20sp"
+                 android:text="-- Database Recovery --" />
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:gravity="center"
+                 android:padding="8dp"
+                 android:orientation="horizontal">
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="wrap_content"
+                     android:layout_marginRight="5dp"
+                     android:text="Backup"
+                     android:id="@+id/btnBackup" />
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="wrap_content"
+                     android:layout_marginLeft="5dp"
+                     android:text="Restore"
+                     android:id="@+id/btnRestore" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                 android:layout_height="fill_parent"
+                 android:layout_width="match_parent"
+                 android:gravity="bottom"
+                 android:orientation="horizontal">
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:padding="10dp"
+                     android:text="© DEVHIMA 2025"
+                     android:id="@+id/btnAbt" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
