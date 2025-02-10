@@ -163,8 +163,7 @@ alertDialog.show();
         textViewUsage = findViewById(R.id.textViewUsage);
 		spinnerViewUsers = findViewById(R.id.spinnerViewUsers);
             txtViewUsername = findViewById(R.id.labelUsrName);
-        edtPsize = findViewById(R.id.editPkgSize);
-            edtPprice = findViewById(R.id.editPkgPrice);
+        
         //spinner 
 		spinnerViewUsers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 				@Override
@@ -288,7 +287,7 @@ alertDialog.show();
 
 				@Override
 				public void onClick(View v) {
-                        db.backup(downDir + "/datausage.db", xContext);
+                        //db.backup("", this);
                        
 				}
 
@@ -300,8 +299,7 @@ alertDialog.show();
 				@Override
 				public void onClick(View v) {
                         
-                      db.importDB(downDir + "/datausage.db",xContext);
-                        refreshSpinner(0);
+                      //db.importDB("",this);
 				}
 
 			});
@@ -311,49 +309,8 @@ alertDialog.show();
 
 				@Override
 				public void onClick(View v) {
-                       Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://dev-hima.blogspot.com/"));
-		   		    startActivity(browse);
-				}
-
-			});
-            
-            Button btnDailyRpt = findViewById(R.id.btnDailyReport);
-            btnDailyRpt.setOnClickListener( new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                        Date date = new Date();
-                        String report = "Report(";
-                        report += dateFormat.format(date).toString() + ")";
-                        int i = 0;
-                        for (User user : users) {
-                            i += 1;
-                            report += "\n (" + String.valueOf(i) + ") " + user.getUsername() + ":  " + DataUsage.formatSize(user.getDataUsage());
-                        }
-                        showMessageDialog("Daily Report", report);
-				}
-
-			});
-            
-            Button btnMonyhRpt = findViewById(R.id.btnMonthReport);
-            btnMonyhRpt.setOnClickListener( new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-                        int price = Integer.parseInt(edtPprice.getText().toString());
-                        int size = Integer.parseInt(edtPsize.getText().toString());
-                        int unitSize = price / size;
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                        Date date = new Date();
-                        String report = "Report(";
-                        report += dateFormat.format(date).toString() + ")";
-                        int i = 0;
-                        for (User user : users) {
-                            i += 1;
-                            report += "\n (" + String.valueOf(i) + ") " + user.getUsername() + ":  " + DataUsage.byteToGB(user.getDataUsage());
-                        }
-                        showMessageDialog("Monthly Report", report);
+                        
+                       
 				}
 
 			});
