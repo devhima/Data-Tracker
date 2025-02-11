@@ -23,7 +23,7 @@
                  android:layout_width="wrap_content"
                  android:padding="20dp"
                  android:textSize="40sp"
-                 android:text="Data Tracker" />
+                 android:text="⌛ Data Tracker" />
 
             <TextView
                  android:layout_height="wrap_content"
@@ -36,32 +36,40 @@
             <LinearLayout
                  android:layout_height="wrap_content"
                  android:layout_width="match_parent"
+                 android:gravity="fill_horizontal"
+                 android:orientation="horizontal">
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="85pt"
+                     android:text="➕ Add"
+                     android:id="@+id/btnAddUsr" />
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:text="✖️ Delete "
+                     android:id="@+id/btnDelUsr" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
                  android:gravity="center"
                  android:orientation="horizontal">
 
                 <Button
                      android:layout_height="wrap_content"
-                     android:layout_width="80dp"
-                     android:text="ADD"
-                     android:id="@+id/btnAddUsr" />
-
-                <Button
-                     android:layout_height="wrap_content"
-                     android:layout_width="80dp"
-                     android:text="DEL"
-                     android:id="@+id/btnDelUsr" />
-
-                <Button
-                     android:layout_height="wrap_content"
-                     android:layout_width="wrap_content"
-                     android:text="Reset"
+                     android:layout_width="85pt"
+                     android:text="0️⃣ Reset"
                      android:id="@+id/btnRstItm" />
 
                 <Button
                      android:layout_height="wrap_content"
-                     android:layout_width="wrap_content"
+                     android:layout_width="match_parent"
                      android:id="@+id/btnRstAll"
-                     android:text="Reset*" />
+                     android:text="🗑️ Reset All" />
 
             </LinearLayout>
 
@@ -70,7 +78,7 @@
                  android:layout_width="match_parent"
                  android:textSize="24sp"
                  android:id="@+id/labelUsers"
-                 android:text="Users:" />
+                 android:text=" 👥 Users:" />
 
             <Spinner
                  android:layout_height="wrap_content"
@@ -93,15 +101,7 @@
                  android:layout_marginBottom="16dp"
                  android:padding="10dp"
                  android:id="@+id/btnRefresh"
-                 android:text="Start" />
-
-            <Button
-                 android:layout_height="wrap_content"
-                 android:layout_width="wrap_content"
-                 android:layout_marginBottom="16dp"
-                 android:padding="10dp"
-                 android:id="@+id/btnDailyReport"
-                 android:text="Daily Report" />
+                 android:text="▶️ Start" />
 
             <LinearLayout
                  android:layout_height="wrap_content"
@@ -113,8 +113,22 @@
                      android:layout_width="match_parent"
                      android:gravity="center"
                      android:textSize="18sp"
-                     android:id="@+id/lblMonthRptTxt"
-                     android:text="-- Monthly Report --" />
+                     android:text="-- Total Package Report --" />
+
+                <Button
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:layout_marginBottom="16dp"
+                     android:padding="10dp"
+                     android:id="@+id/btnDailyReport"
+                     android:text="📋 Create Report" />
+
+                <TextView
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:gravity="center"
+                     android:textSize="18sp"
+                     android:text="-- Total Bill Report --" />
 
                 <LinearLayout
                      android:layout_height="wrap_content"
@@ -132,7 +146,10 @@
                          android:layout_width="fill_parent"
                          android:hint="Package size (GB)"
                          android:id="@+id/editPkgSize"
-                         android:textStyle="bold" />
+                         android:textStyle="bold"
+                         android:text="0"
+                         android:inputType="number"
+                         android:singleLine="true" />
 
                 </LinearLayout>
 
@@ -152,7 +169,10 @@
                          android:layout_width="fill_parent"
                          android:hint="Package price"
                          android:id="@+id/editPkgPrice"
-                         android:textStyle="bold" />
+                         android:textStyle="bold"
+                         android:text="0"
+                         android:inputType="number"
+                         android:singleLine="true" />
 
                 </LinearLayout>
 
@@ -163,7 +183,7 @@
                      android:gravity="center"
                      android:padding="10dp"
                      android:id="@+id/btnMonthReport"
-                     android:text="Create Report" />
+                     android:text="💲Create Report" />
 
             </LinearLayout>
 
@@ -185,14 +205,14 @@
                      android:layout_height="wrap_content"
                      android:layout_width="wrap_content"
                      android:layout_marginRight="5dp"
-                     android:text="Backup"
+                     android:text="💾 Backup"
                      android:id="@+id/btnBackup" />
 
                 <Button
                      android:layout_height="wrap_content"
                      android:layout_width="wrap_content"
                      android:layout_marginLeft="5dp"
-                     android:text="Restore"
+                     android:text="📥 Restore"
                      android:id="@+id/btnRestore" />
 
             </LinearLayout>
@@ -207,7 +227,7 @@
                      android:layout_height="wrap_content"
                      android:layout_width="match_parent"
                      android:padding="10dp"
-                     android:text="© DEVHIMA 2025"
+                     android:text="©️ DEVHIMA 2025"
                      android:id="@+id/btnAbt" />
 
             </LinearLayout>

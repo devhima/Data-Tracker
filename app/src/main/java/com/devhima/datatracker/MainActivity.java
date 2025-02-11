@@ -27,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private final String USER_NAME_ITEM = "item";
     private DatabaseHelper db;
 	private Spinner spinnerViewUsers;
+    private Button btnRst;
+    private Button btnRstAll;
+    private Button btnAddUsr;
+    private Button btnDelUsr;
+    private Button buttonRefresh;
+    
     private TextView textViewUsage;
     private TextView txtViewUsername;
     private List<User> users;
@@ -126,6 +132,26 @@ alertDialog.show();
     }
     
     
+    private void setRun(boolean state){
+        if(state == false){
+            buttonRefresh.setText("▶️ Start");
+            btnAddUsr.setEnabled(true);
+            btnDelUsr.setEnabled(true);
+            btnRst.setEnabled(true);
+            btnRstAll.setEnabled(true);
+            spinnerViewUsers.setEnabled(true);
+            
+        }else if(state == true){
+            buttonRefresh.setText("⏹ Stop");
+            btnAddUsr.setEnabled(false);
+            btnDelUsr.setEnabled(false);
+            btnRst.setEnabled(false);
+            btnRstAll.setEnabled(false);
+            spinnerViewUsers.setEnabled(false);
+            //textViewUsage.setText("Tracking data now...");
+        }
+    }
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,12 +165,21 @@ alertDialog.show();
         // set content view to binding's root
        // setContentView(binding.getRoot());
             setContentView(R.layout.activity_main);
-            Button buttonRefresh = findViewById(R.id.btnRefresh);
+            
+            //buttons
+            buttonRefresh = findViewById(R.id.btnRefresh);
+            btnAddUsr = findViewById(R.id.btnAddUsr);
+            btnDelUsr = findViewById(R.id.btnDelUsr);
+            btnRstAll = findViewById(R.id.btnRstAll);
+            btnRst = findViewById(R.id.btnRstItm);
+            spinnerViewUsers = findViewById(R.id.spinnerViewUsers);
+            textViewUsage = findViewById(R.id.textViewUsage);
+            
             if(getSetting()==false){
-                buttonRefresh.setText("Start");
+                setRun(false);
                 //mkToast(String.valueOf(getSetting()));
             } else if (getSetting()==true){
-                buttonRefresh.setText("Stop");
+                setRun(true);
                 //mkToast(String.valueOf(getSetting()));
             } else{
                 saveSetting(false);
@@ -157,14 +192,15 @@ alertDialog.show();
         
         //start
         xContext = this;
-            downDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        downDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
             //mkToast(downDir);
         db = new DatabaseHelper(this);
-        textViewUsage = findViewById(R.id.textViewUsage);
-		spinnerViewUsers = findViewById(R.id.spinnerViewUsers);
-            txtViewUsername = findViewById(R.id.labelUsrName);
+        
+		
+        txtViewUsername = findViewById(R.id.labelUsrName);
         edtPsize = findViewById(R.id.editPkgSize);
-            edtPprice = findViewById(R.id.editPkgPrice);
+        edtPprice = findViewById(R.id.editPkgPrice);
+            
         //spinner 
 		spinnerViewUsers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 				@Override
@@ -173,7 +209,7 @@ alertDialog.show();
                        // String txtUsr = adapterView.getItemAtPosition(i).toString();
                         User xusr = users.get(adapterView.getSelectedItemPosition());
                         String dataUsage = DataUsage.formatSize(xusr.getDataUsage());
-					    textViewUsage.setText(String.format("Current Data Usage: %s", dataUsage));
+					    textViewUsage.setText(String.format("Usage: %s", dataUsage));
                         txtViewUsername.setText(xusr.getUsername());
                         
 				}
@@ -205,21 +241,22 @@ alertDialog.show();
                         User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
                         //mkToast(String.valueOf(getSetting()));
                         if(getSetting()==false){
-                            buttonRefresh.setText("Stop");
+                            setRun(true);
                             saveSetting(true);
                             long du = DataUsage.getUsageStats();
                             xusr.setDataUsage(xusr.getDataUsage(),du,0);
                             db.updateUserUsage(xusr.getUsername(),xusr.getDataUsage(),du,0);
                             mkToast("Start tracking..");
                         } else if(getSetting()==true){
-                            buttonRefresh.setText("Start");
+                            setRun(false);
                             saveSetting(false);
                             long after = DataUsage.getUsageStats();
                             long totalUsage;
-                            totalUsage = xusr.getDataUsage() + (after - xusr.getBefore());
+                            long current = after - xusr.getBefore();
+                            totalUsage = xusr.getDataUsage() + current;
                             xusr.setDataUsage(totalUsage,xusr.getBefore(),after);
                             db.updateUserUsage(xusr.getUsername(),totalUsage,xusr.getBefore(),after);
-                            mkToast("Stop tracking..");
+                            mkToast("Used " + DataUsage.formatSize(current));
                         }
                     saveSetItem(spinnerViewUsers.getSelectedItemPosition());
 					refreshSpinner(getSetItem());
@@ -227,7 +264,7 @@ alertDialog.show();
             
         });
 		
-		Button btnAddUsr = findViewById(R.id.btnAddUsr);
+		
         btnAddUsr.setOnClickListener( new OnClickListener() {
 
 				@Override
@@ -237,48 +274,101 @@ alertDialog.show();
 
 			});
             
-        Button btnDelUsr = findViewById(R.id.btnDelUsr);
+        
         btnDelUsr.setOnClickListener( new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-                        if(spinnerViewUsers.getCount() != 0){
-					    db.deleteNote(String.valueOf(spinnerViewUsers.getSelectedItem().toString()));
-                        refreshSpinner(0);
-                        saveSetItem(0);
-                    }
+                        
+                        AlertDialog.Builder builder = new AlertDialog.Builder(xContext);
+                        builder.setMessage("Are you sure?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    if(spinnerViewUsers.getCount() != 0){
+                                        db.deleteNote(String.valueOf(spinnerViewUsers.getSelectedItem().toString()));
+                                        refreshSpinner(0);
+                                        saveSetItem(0);
+                                    }
+                                    dialog.dismiss();
+                                    }
+                                });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){   
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    dialog.dismiss();
+                                    }
+                                });         
+                        builder.show();
+                        
+                        
 				}
 
 			});
             
-            Button btnRstAll = findViewById(R.id.btnRstAll);
             btnRstAll.setOnClickListener( new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
                         
-                        if(spinnerViewUsers.getCount() != 0){
-					    for (User user : users) {
-						db.updateUserUsage(user.getUsername(),0,0,0);
-					    }
-                            saveSetItem(0);
-                            refreshSpinner(0);
-                    }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(xContext);
+                        builder.setMessage("Are you sure?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    
+                                    if(spinnerViewUsers.getCount() != 0){
+                                        for (User user : users) {
+                                        db.updateUserUsage(user.getUsername(),0,0,0);
+                                        }
+                                        saveSetItem(0);
+                                        refreshSpinner(0);
+                                    }
+                                    
+                                    dialog.dismiss();
+                                    }
+                                });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){   
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    dialog.dismiss();
+                                    }
+                                });         
+                        builder.show();
+                        
+                        
 				}
 
 			});
             
-            Button btnRst = findViewById(R.id.btnRstItm);
+            
             btnRst.setOnClickListener( new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
                         
-                        if(spinnerViewUsers.getCount() != 0){
-					    User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
-						db.updateUserUsage(xusr.getUsername(),0,0,0);
-                        refreshSpinner(spinnerViewUsers.getSelectedItemPosition());
-                    }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(xContext);
+                        builder.setMessage("Are you sure?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    if(spinnerViewUsers.getCount() != 0){
+                                        User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
+                                        db.updateUserUsage(xusr.getUsername(),0,0,0);
+                                        refreshSpinner(spinnerViewUsers.getSelectedItemPosition());
+                                        }
+                                    dialog.dismiss();
+                                    }
+                                });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){   
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    dialog.dismiss();
+                                    }
+                                });         
+                        builder.show();
+                        
+                        
 				}
 
 			});
@@ -288,8 +378,25 @@ alertDialog.show();
 
 				@Override
 				public void onClick(View v) {
-                        db.backup(downDir + "/datausage.db", xContext);
-                       
+                        
+                        AlertDialog.Builder builder = new AlertDialog.Builder(xContext);
+                        builder.setMessage("Are you sure?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    db.backup(downDir + "/datausage.db", xContext);
+                                    dialog.dismiss();
+                                    }
+                                });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){   
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    dialog.dismiss();
+                                    }
+                                });         
+                        builder.show();
+                        
+                        
 				}
 
 			});
@@ -300,8 +407,26 @@ alertDialog.show();
 				@Override
 				public void onClick(View v) {
                         
-                      db.importDB(downDir + "/datausage.db",xContext);
-                        refreshSpinner(0);
+                        
+                        AlertDialog.Builder builder = new AlertDialog.Builder(xContext);
+                        builder.setMessage("Are you sure?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                     db.importDB(downDir + "/datausage.db",xContext);
+                                     refreshSpinner(0);
+                                    dialog.dismiss();
+                                    }
+                                });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){   
+                                @Override
+                                public void onClick(DialogInterface dialog, int which){
+                                    dialog.dismiss();
+                                    }
+                                });         
+                        builder.show();
+                        
+                     
 				}
 
 			});
@@ -326,12 +451,15 @@ alertDialog.show();
                         Date date = new Date();
                         String report = "Report(";
                         report += dateFormat.format(date).toString() + ")";
+                        long ttlds = 0;
                         int i = 0;
                         for (User user : users) {
+                            ttlds += user.getDataUsage();
                             i += 1;
                             report += "\n (" + String.valueOf(i) + ") " + user.getUsername() + ":  " + DataUsage.formatSize(user.getDataUsage());
                         }
-                        showMessageDialog("Daily Report", report);
+                        report += "\n\n • Total data usage:  " + DataUsage.formatSize(ttlds);
+                        showMessageDialog("Total Package Report", report);
 				}
 
 			});
@@ -341,19 +469,36 @@ alertDialog.show();
 
 				@Override
 				public void onClick(View v) {
-                        int price = Integer.parseInt(edtPprice.getText().toString());
-                        int size = Integer.parseInt(edtPsize.getText().toString());
-                        int unitSize = price / size;
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                        Date date = new Date();
-                        String report = "Report(";
-                        report += dateFormat.format(date).toString() + ")";
-                        int i = 0;
-                        for (User user : users) {
-                            i += 1;
-                            report += "\n (" + String.valueOf(i) + ") " + user.getUsername() + ":  " + DataUsage.byteToGB(user.getDataUsage());
-                        }
-                        showMessageDialog("Monthly Report", report);
+                    try{
+                        String p = edtPprice.getText().toString();
+                        String s = edtPsize.getText().toString();
+                        int price = Integer.parseInt(p);
+                        int size = Integer.parseInt(s);
+                            
+                            double ttlcs = 0;
+                           
+                            double unitSize = price / size;
+                            
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                            Date date = new Date();
+                            String report = "Report(";
+                            report += dateFormat.format(date).toString() + ")";
+                            int i = 0;
+                            
+                            for (User user : users) {
+                                
+                                double cds = DataUsage.byteToGB(user.getDataUsage());
+                                ttlcs += (cds * unitSize);
+                                i += 1;
+                                report += "\n (" + String.valueOf(i) + ") " + user.getUsername() + ":  " + (unitSize * cds);
+                            }
+                            report += "\n\n • Total cost usage:  " + ttlcs;
+                            showMessageDialog("Total Bill Report", report);
+                        
+                    }catch(Exception ex){
+                        mkToast(ex.getMessage().toString());
+                    }
+                        
 				}
 
 			});
