@@ -5,8 +5,25 @@ plugins {
 }
 
 android {
+
     namespace = "com.devhima.datatracker"
     compileSdk = 33
+    
+    
+    signingConfigs {
+        getByName("debug") {
+            keyAlias = "devhima"
+            keyPassword = "devhima"
+            storeFile = file("/storage/emulated/0/AndroidIDEProjects/Data/devhima.keystore")
+            storePassword = "devhima"
+        }
+        create("release") {
+            keyAlias = "devhima"
+            keyPassword = "devhima"
+            storeFile = file("/storage/emulated/0/AndroidIDEProjects/Data/devhima.keystore")
+            storePassword = "devhima"
+        }
+    }
     
     defaultConfig {
         applicationId = "com.devhima.datatracker"
@@ -18,6 +35,7 @@ android {
         vectorDrawables { 
             useSupportLibrary = true
         }
+        
     }
     
     compileOptions {
@@ -26,9 +44,19 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = true
+        /*release {
+            //isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }*/
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
+            isDebuggable = false
+        }
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = true
         }
     }
 
