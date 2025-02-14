@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtViewUsername;
     private List<User> users;
     private Context xContext;
+    public static Context shareContext;
     private String downDir;
     private EditText edtPsize;
     private EditText edtPprice;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                     dialog.dismiss();
                     }
     });
-alertDialog.show();
+        alertDialog.show();
     }
     
     private void saveSetting(boolean setting){
@@ -192,6 +193,7 @@ alertDialog.show();
         
         //start
         xContext = this;
+            shareContext = xContext;
         downDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
             //mkToast(downDir);
         db = new DatabaseHelper(this);
@@ -232,13 +234,11 @@ alertDialog.show();
 				@Override
 				public void onClick(View v) {
 					// Here you would update data usage from the system,
-					// for now, we'll just simulate it
-					/*for (User user : users) {
-                            mkToast(user.getUsername());
-						user.setDataUsage(user.getDataUsage() * 2); // Simulate increase
-						db.updateUserUsage(user.getUsername(), user.getDataUsage());
-					}*/
+				
                         User xusr = users.get(spinnerViewUsers.getSelectedItemPosition());
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+                        Date date = new Date();
+                        String strDate = dateFormat.format(date).toString();
                         //mkToast(String.valueOf(getSetting()));
                         if(getSetting()==false){
                             setRun(true);
@@ -247,6 +247,10 @@ alertDialog.show();
                             xusr.setDataUsage(xusr.getDataUsage(),du,0);
                             db.updateUserUsage(xusr.getUsername(),xusr.getDataUsage(),du,0);
                             mkToast("Start tracking..");
+                            String logB;
+                            logB = "Log: " + strDate + " , User: " + xusr.getUsername() + ", oldUsage= " + DataUsage.formatSize(xusr.getDataUsage()) + ", startWith= " + DataUsage.formatSize(xusr.getBefore()) + ";";
+                            DataUsage.appendLog(logB);
+                                
                         } else if(getSetting()==true){
                             setRun(false);
                             saveSetting(false);
@@ -257,6 +261,9 @@ alertDialog.show();
                             xusr.setDataUsage(totalUsage,xusr.getBefore(),after);
                             db.updateUserUsage(xusr.getUsername(),totalUsage,xusr.getBefore(),after);
                             mkToast("Used " + DataUsage.formatSize(current));
+                            String logA;
+                            logA = "Log: " + strDate + " , User: " + xusr.getUsername() + ", oldUsage= " + DataUsage.formatSize(xusr.getDataUsage()) + ", startWith= " + DataUsage.formatSize(xusr.getBefore()) + ", endWith= " + DataUsage.formatSize(xusr.getAfter()) + ", netUsage= " + DataUsage.formatSize(current) + ";";
+                            DataUsage.appendLog(logA);
                         }
                     saveSetItem(spinnerViewUsers.getSelectedItemPosition());
 					refreshSpinner(getSetItem());
